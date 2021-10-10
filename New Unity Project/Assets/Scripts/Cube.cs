@@ -7,6 +7,8 @@ public class Cube : MonoBehaviour
     public float speed = 1f;
     public float minY = 0f;
     public float maxY = 5f;
+
+    public float rotationSpeed = 90f;
     private Vector3 direction = Vector3.up;
     MeshRenderer meshRenderer;
 
@@ -45,6 +47,6 @@ public class Cube : MonoBehaviour
         }
 
         float currentYrot = transform.rotation.eulerAngles.y;
-        transform.rotation = Quaternion.Euler(0,currentYrot + 1.5f,0);
+        transform.rotation = Quaternion.Euler(0,currentYrot + rotationSpeed * Time.deltaTime,0);
     }
 }

@@ -6,10 +6,7 @@ public class UpdateText : MonoBehaviour
 {
     public Text text;
     public Slider slider;
-    public void updateText()
-    {
-        text.text = slider.value.ToString();
-    }
+    
     // Start is called before the first frame update
     void Start()
     {

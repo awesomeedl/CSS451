@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class Controller_Mouse : MonoBehaviour
+public partial class Controller : MonoBehaviour
 {
     // Prefab
     public GameObject aimLinePrefab;
@@ -37,7 +38,7 @@ public class Controller_Mouse : MonoBehaviour
         if(Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 100f, layerMask.value))
         {
             // Detect Click
-            if(Input.GetMouseButtonDown(0))
+            if(!EventSystem.current.IsPointerOverGameObject() && Input.GetMouseButtonDown(0))
             {
                 switch(hit.transform.gameObject.layer)
                 {
@@ -74,10 +75,5 @@ public class Controller_Mouse : MonoBehaviour
                 }
             }
         }
-    }
-
-    void CreateLine()
-    {
-        
     }
 }

@@ -4,25 +4,23 @@ using UnityEngine;
 
 public class AimLine : MonoBehaviour
 {
+    public static float interval = 1f;
+    public static float speed = 5f;
+    public static float lifeSpan = 10f; 
+
     public GameObject ballPrefab;
     public Transform start, end;
     public GameObject line;
 
-    [Header("Traveling Ball Param")]
-    [Range(0.5f, 4f)]
-    public float interval = 1f;
-    [Range(0.5f, 15f)]
-    public float speed = 5f;
-    [Range(1f, 15f)]
-    public float lifeSpan = 10f; 
-
     float nextSpawn = 0f;
 
     Vector3 l;
-    // Start is called before the first frame update
-    void Start()
-    {
 
+    public static void SetParam(float interval, float speed, float lifeSpan)
+    {
+        AimLine.interval = interval;
+        AimLine.speed = speed;
+        AimLine.lifeSpan = lifeSpan;
     }
 
     // Update is called once per frame

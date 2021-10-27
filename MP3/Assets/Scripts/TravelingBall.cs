@@ -8,8 +8,6 @@ public class TravelingBall : MonoBehaviour
     float speed = 0f;
     float lifeSpan = 0f;
 
-    public float d;
-
     // Update is called once per frame
     void Update()
     {
@@ -21,6 +19,7 @@ public class TravelingBall : MonoBehaviour
         }
 
         CastShadow();
+        Bounce();
     }
 
     public void SetParam(float speed, float lifeSpan)
@@ -29,12 +28,11 @@ public class TravelingBall : MonoBehaviour
         this.lifeSpan = lifeSpan;
     }
 
-    public void CastShadow()
+    void CastShadow()
     {
-        d = Vector3.Dot(transform.position, TheBarrier.instance.Vn);
-        Vector3 v = (d-TheBarrier.instance.D) * -TheBarrier.instance.Vn;
+        Vector3 v = (Vector3.Dot(transform.position, TheBarrier.instance.Vn) - TheBarrier.instance.D) * -TheBarrier.instance.Vn;
         Vector3 Pon = transform.position + v;
-        if(d > 0f && TheBarrier.instance.InRange(Pon))
+        if(InfrontOfBarrier(transform.position)  && TheBarrier.instance.InRange(Pon))
         {
             if(!shadow.activeInHierarchy)
             {
@@ -53,5 +51,22 @@ public class TravelingBall : MonoBehaviour
             shadow.SetActive(false);
             line.SetActive(false);
         }
+    }
+
+    void Bounce()
+    {
+        Vector3 velocity = speed * transform.up;
+        Vector3 predictPos = transform.position + velocity * Time.smoothDeltaTime;
+
+        if(InfrontOfBarrier(transform.position) && !InfrontOfBarrier(predictPos)) // Going to collide
+        {
+            velocity = 2f * (Vector3.Dot(-velocity, TheBarrier.instance.Vn) * TheBarrier.instance.Vn) + velocity;
+            transform.up = velocity.normalized;
+        }
+    }
+
+    bool InfrontOfBarrier(Vector3 pos)
+    {
+        return Vector3.Dot(pos, TheBarrier.instance.Vn) > TheBarrier.instance.D;
     }
 }

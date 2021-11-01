@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public partial class Controller : MonoBehaviour
 {
@@ -9,9 +10,11 @@ public partial class Controller : MonoBehaviour
     public GameObject aimLinePrefab;
 
     // References
-    public SliderWithEcho Interval, Speed, LifeSpan;
+    public SliderWithEcho Interval, Speed, LifeSpan, OSpeed, ORadius;
     public XformControl barrierCtrl;
     public Transform barrier;
+
+    public Toggle OrbitToggle;
 
     void Awake()
     {
@@ -34,10 +37,14 @@ public partial class Controller : MonoBehaviour
         Interval.InitSliderRange(0.5f, 4, BallSpawner.interval);
         Speed.InitSliderRange(0.5f, 15, BallSpawner.speed);
         LifeSpan.InitSliderRange(1, 15, BallSpawner.lifeSpan);
+        OSpeed.InitSliderRange(0.1f, Mathf.PI * 2f, BallSpawner.orbitSpeed);
+        ORadius.InitSliderRange(0f, 5f, BallSpawner.orbitRadius);
 
         Interval.SetSliderListener(UpdateInterval);
         Speed.SetSliderListener(UpdateSpeed);
         LifeSpan.SetSliderListener(UpdateLifeSpan);
+        OSpeed.SetSliderListener(UpdateOSpeed);
+        ORadius.SetSliderListener(UpdateORadius);
     }
     void UpdateInterval(float param)
     {
@@ -53,9 +60,29 @@ public partial class Controller : MonoBehaviour
         BallSpawner.lifeSpan = LifeSpan.GetSliderValue();
     }
 
+    void UpdateOSpeed(float param)
+    {
+        BallSpawner.orbitSpeed = OSpeed.GetSliderValue();
+    }
+
+    void UpdateORadius(float param)
+    {
+        BallSpawner.orbitRadius = ORadius.GetSliderValue();
+    }
+
     GameObject CreateAimLine(float y, float z)
     {
         return Instantiate(aimLinePrefab, new Vector3(0, y, z), Quaternion.identity);
+    }
+
+    public void ToggleOrbitCtrl()
+    {
+
+        BallSpawner.orbitSpeed = OrbitToggle.isOn ? OSpeed.GetSliderValue() : 0f;
+        BallSpawner.orbitRadius = OrbitToggle.isOn ? ORadius.GetSliderValue() : 0f;
+
+        OSpeed.gameObject.SetActive(OrbitToggle.isOn);
+        ORadius.gameObject.SetActive(OrbitToggle.isOn);
     }
 
     public void Quit()

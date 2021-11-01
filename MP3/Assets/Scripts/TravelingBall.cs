@@ -8,6 +8,11 @@ public class TravelingBall : MonoBehaviour
     float speed = 0f, lifeSpan = 0f;
     Vector3 contactPt, v, Pon, velocity;
 
+    // Variables for orbiting
+    Vector3 i, j, k;
+    float t0, t;
+    float orbitSpeed, orbitRadius;
+
 
     // Update is called once per frame
     void Update()
@@ -23,7 +28,13 @@ public class TravelingBall : MonoBehaviour
 
         // Velocity of the ball
         velocity = speed * transform.up;
-
+        
+        t = Time.time - t0;
+        velocity = new Vector3(
+            -i.x * orbitRadius * orbitSpeed * Mathf.Sin(orbitSpeed * t) + j.x * orbitRadius * orbitSpeed * Mathf.Cos(orbitSpeed * t) + velocity.x,
+            -i.y * orbitRadius * orbitSpeed * Mathf.Sin(orbitSpeed * t) + j.y * orbitRadius * orbitSpeed * Mathf.Cos(orbitSpeed * t) + velocity.y,
+            -i.z * orbitRadius * orbitSpeed * Mathf.Sin(orbitSpeed * t) + j.z * orbitRadius * orbitSpeed * Mathf.Cos(orbitSpeed * t) + velocity.z
+        );
 
         transform.position += velocity * Time.deltaTime;
 
@@ -37,10 +48,20 @@ public class TravelingBall : MonoBehaviour
         Bounce();
     }
 
-    public void SetParam(float speed, float lifeSpan)
+    public void SetParam(float speed, float lifeSpan, float orbitSpeed, float orbitRadius)
     {
         this.speed = speed;
         this.lifeSpan = lifeSpan;
+        this.orbitSpeed = orbitSpeed;
+        this.orbitRadius = orbitRadius;
+
+        i = transform.right;
+        j = transform.forward;
+
+        t0 = Time.time;
+
+        transform.position += orbitRadius * i;
+        //Debug.Log(transform.right + " " + transform.forward + " " + transform.up);
     }
 
     void CastShadow()
@@ -74,11 +95,9 @@ public class TravelingBall : MonoBehaviour
         {
             velocity = 2f * (Vector3.Dot(-velocity, TheBarrier.instance.Vn) * TheBarrier.instance.Vn) + velocity;
             transform.up = velocity.normalized;
-        }
-    }
 
-    void OnBecameInvisible()
-    {
-        BallSpawner.RemoveBall(gameObject);
+            i = transform.right;
+            j = transform.forward;
+        }
     }
 }

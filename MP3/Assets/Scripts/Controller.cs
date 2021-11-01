@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public partial class Controller : MonoBehaviour
 {
@@ -28,16 +29,11 @@ public partial class Controller : MonoBehaviour
         CursorSelect();
     }
 
-    void CreateAimLine(float y, float z)
-    {
-        Instantiate(aimLinePrefab, new Vector3(0, y, z), Quaternion.identity);
-    }
-
     void InitSliders()
     {
-        Interval.InitSliderRange(0.5f, 4, AimLine.interval);
-        Speed.InitSliderRange(0.5f, 15, AimLine.speed);
-        LifeSpan.InitSliderRange(1, 15, AimLine.lifeSpan);
+        Interval.InitSliderRange(0.5f, 4, BallSpawner.interval);
+        Speed.InitSliderRange(0.5f, 15, BallSpawner.speed);
+        LifeSpan.InitSliderRange(1, 15, BallSpawner.lifeSpan);
 
         Interval.SetSliderListener(UpdateInterval);
         Speed.SetSliderListener(UpdateSpeed);
@@ -45,16 +41,30 @@ public partial class Controller : MonoBehaviour
     }
     void UpdateInterval(float param)
     {
-        AimLine.interval = Interval.GetSliderValue();
+        BallSpawner.interval = Interval.GetSliderValue();
     }
     void UpdateSpeed(float param)
     {
-        AimLine.speed = Speed.GetSliderValue();
+        BallSpawner.speed = Speed.GetSliderValue();
     }
 
     void UpdateLifeSpan(float param)
     {
-        AimLine.lifeSpan = LifeSpan.GetSliderValue();
+        BallSpawner.lifeSpan = LifeSpan.GetSliderValue();
     }
 
+    GameObject CreateAimLine(float y, float z)
+    {
+        return Instantiate(aimLinePrefab, new Vector3(0, y, z), Quaternion.identity);
+    }
+
+    public void Quit()
+    {
+        Application.Quit();
+    }
+
+    public void Reset()
+    {
+        SceneManager.LoadScene(0);
+    }
 }

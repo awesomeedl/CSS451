@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 public partial class Controller : MonoBehaviour
 {
     // EndPt selection
-    GameObject selected;
+    Transform selected;
     Color cachedColor;
 
     // LayerMask for raycasting
@@ -21,6 +21,15 @@ public partial class Controller : MonoBehaviour
         normalMask = LayerMask.GetMask("EndPt", "Wall", "LineSeg");
         planeOnly = LayerMask.GetMask("Wall");
         layerMask = normalMask;
+    }
+
+    void Select(Transform selected)
+    {
+        this.selected = selected;
+        cachedColor = selected.GetComponent<MeshRenderer>().material.color;
+        selected.GetComponent<MeshRenderer>().material.color = Color.black;
+        // Change the raycast to only detect walls (ignore other objects)
+        layerMask.value = planeOnly;
     }
 
     void CursorSelect()
@@ -38,17 +47,19 @@ public partial class Controller : MonoBehaviour
             switch(hit.transform.gameObject.layer)
             {
                 case 6: // End Point
-                    selected = hit.transform.gameObject;
-                    cachedColor = selected.GetComponent<MeshRenderer>().material.color;
-                    selected.GetComponent<MeshRenderer>().material.color = Color.black;
-                    // Change the raycast to only detect walls (ignore other objects)
-                    layerMask.value = planeOnly;
+                    Select(hit.transform);
                     break;
                 case 7: // Wall
-                    CreateAimLine(hit.point.y, hit.point.z);
+                    if (hit.transform.CompareTag("left"))
+                    {
+                        GameObject g = CreateAimLine(hit.point.y, hit.point.z);
+                        Select(g.GetComponent<Line>().start);
+                    }
                     break;
                 case 8: // LineSeg
-                    // TODO: Implement lineSeg deletion 
+                    Debug.Log("LineSeg selected");
+                    Destroy(hit.transform.parent.gameObject);
+                    break;
                 default:
                     break;
             }

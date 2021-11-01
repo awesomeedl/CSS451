@@ -28,8 +28,13 @@ public class TheBarrier : MonoBehaviour
         D = Vector3.Dot(Vn, transform.position);
     }
 
-    public bool InRange(Vector3 pos)
+    public static bool InRange(Vector3 pos)
     {
-        return (Mathf.Abs((transform.position - pos).magnitude) < transform.localScale.x / 2f);
+        return (Mathf.Abs((instance.transform.position - pos).magnitude) < instance.transform.localScale.x / 2f);
+    }
+
+    public static bool Infront(Vector3 pos)
+    {
+        return Vector3.Dot(pos, instance.Vn) > instance.D;
     }
 }

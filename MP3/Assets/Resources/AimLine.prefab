@@ -60,7 +60,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 4ad5a1a55f89b994a866cee4b45db7c2, type: 2}
+  - {fileID: 2100000, guid: 727d5b95ff9d67349b147341abac0153, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -155,7 +155,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 4ad5a1a55f89b994a866cee4b45db7c2, type: 2}
+  - {fileID: 2100000, guid: 727d5b95ff9d67349b147341abac0153, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -237,11 +237,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 784aaaaaee9496846bfba9403497d497, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ballPrefab: {fileID: 4281932755321187098, guid: 73e3b47a595a01d4e89775833ebd5643, type: 3}
+  spawnBall: 1
   start: {fileID: 3732687928097260337}
   end: {fileID: 3732687926733712061}
   line: {fileID: 3732687928448240606}
   reflectLine: {fileID: 7657341294250575397}
+  lineThickness: 0.2
 --- !u!1 &3732687928448240606
 GameObject:
   m_ObjectHideFlags: 0
@@ -333,7 +334,7 @@ CapsuleCollider:
   m_GameObject: {fileID: 3732687928448240606}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 0
+  m_Enabled: 1
   m_Radius: 0.5000001
   m_Height: 2
   m_Direction: 1

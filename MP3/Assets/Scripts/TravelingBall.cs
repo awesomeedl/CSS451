@@ -5,17 +5,32 @@ using UnityEngine;
 public class TravelingBall : MonoBehaviour
 {
     public GameObject shadow, line;
-    float speed = 0f;
-    float lifeSpan = 0f;
+    float speed = 0f, lifeSpan = 0f;
+    Vector3 contactPt, v, Pon, velocity;
+
 
     // Update is called once per frame
     void Update()
     {
-        transform.position += transform.up * speed * Time.deltaTime;
+        // Point on ball that is closeset/perpendicular to the plane 
+        contactPt = transform.position - TheBarrier.instance.Vn * transform.localScale.y * 0.5f;
+        
+        // Noraml vector from the ball to the plane 
+        v = (Vector3.Dot(transform.position, TheBarrier.instance.Vn) - TheBarrier.instance.D) * -TheBarrier.instance.Vn;
+        
+        // Position of the ball projected on the plane
+        Pon = transform.position + v;
+
+        // Velocity of the ball
+        velocity = speed * transform.up;
+
+
+        transform.position += velocity * Time.deltaTime;
+
         lifeSpan -= Time.deltaTime;
         if(lifeSpan < 0)
         {
-            Destroy(gameObject);
+            BallSpawner.RemoveBall(gameObject);
         }
 
         CastShadow();
@@ -30,9 +45,7 @@ public class TravelingBall : MonoBehaviour
 
     void CastShadow()
     {
-        Vector3 v = (Vector3.Dot(transform.position, TheBarrier.instance.Vn) - TheBarrier.instance.D) * -TheBarrier.instance.Vn;
-        Vector3 Pon = transform.position + v;
-        if(InfrontOfBarrier(transform.position)  && TheBarrier.instance.InRange(Pon))
+        if(TheBarrier.Infront(contactPt)  && TheBarrier.InRange(Pon))
         {
             if(!shadow.activeInHierarchy)
             {
@@ -42,9 +55,7 @@ public class TravelingBall : MonoBehaviour
             shadow.transform.position = Pon;
             shadow.transform.up = TheBarrier.instance.Vn;
 
-            line.transform.position = transform.position + v / 2f;
-            line.transform.up = v.normalized;
-            line.transform.localScale = new Vector3(0.02f, v.magnitude / 2f, 0.02f);
+            MyUtil.DrawLine(line.transform, transform.position, v, 0.02f);
         }
         else
         {
@@ -55,18 +66,17 @@ public class TravelingBall : MonoBehaviour
 
     void Bounce()
     {
-        Vector3 velocity = speed * transform.up;
-        Vector3 predictPos = transform.position + velocity * Time.smoothDeltaTime;
-
-        if(InfrontOfBarrier(transform.position) && !InfrontOfBarrier(predictPos)) // Going to collide
+        if(TheBarrier.Infront(transform.position) && !TheBarrier.Infront(contactPt) 
+            && Vector3.Dot(velocity, TheBarrier.instance.Vn) < 0
+            && TheBarrier.InRange(Pon)) // Going to collide
         {
             velocity = 2f * (Vector3.Dot(-velocity, TheBarrier.instance.Vn) * TheBarrier.instance.Vn) + velocity;
             transform.up = velocity.normalized;
         }
     }
 
-    bool InfrontOfBarrier(Vector3 pos)
+    void OnBecameInvisible()
     {
-        return Vector3.Dot(pos, TheBarrier.instance.Vn) > TheBarrier.instance.D;
+        BallSpawner.RemoveBall(gameObject);
     }
 }

@@ -31,7 +31,10 @@ public class Line : MonoBehaviour
 
     void Reflect()
     {
-        projectedV = v * (TheBarrier.instance.D - Vector3.Dot(start.position, TheBarrier.instance.Vn)) / Vector3.Dot(v, TheBarrier.instance.Vn);
+        float d = Vector3.Dot(v, TheBarrier.instance.Vn);
+        if(d > 0 || Mathf.Abs(d) < float.Epsilon) return;
+
+        projectedV = v * (TheBarrier.instance.D - Vector3.Dot(start.position, TheBarrier.instance.Vn)) / d;
         reflectPt = start.transform.position + projectedV;
 
         if(TheBarrier.InRange(reflectPt))

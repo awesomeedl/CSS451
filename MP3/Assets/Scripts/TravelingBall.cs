@@ -52,8 +52,10 @@ public class TravelingBall : MonoBehaviour
                 shadow.SetActive(true);
                 line.SetActive(true);
             }
-            shadow.transform.position = Pon;
+            shadow.transform.position = Pon - v.normalized * 0.05f;
             shadow.transform.up = TheBarrier.instance.Vn;
+            float scale = (1f - (v.magnitude / 34f)) * (1f - (v.magnitude / 34f));
+            shadow.transform.localScale = new Vector3(scale, 0.1f, scale);
 
             MyUtil.DrawLine(line.transform, transform.position, v, 0.02f);
         }
